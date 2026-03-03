@@ -6,11 +6,11 @@ import { ALL_QUESTIONS } from '../constants';
 interface Props {
   targetTeam: TeamColor;
   usedQuestionIds: string[];
-  onCorrectAnswer: (id: string, bonus: ResourceType | null) => void;
+  onQuestionAnswered: (id: string, isCorrect: boolean, bonus: ResourceType | null) => void;
   onBack: () => void;
 }
 
-const QuestionQuiz: React.FC<Props> = ({ targetTeam, usedQuestionIds, onCorrectAnswer, onBack }) => {
+const QuestionQuiz: React.FC<Props> = ({ targetTeam, usedQuestionIds, onQuestionAnswered, onBack }) => {
   const [step, setStep] = useState<'count' | 'quiz' | 'reward'>('count');
   const [questionCount, setQuestionCount] = useState<number>(3);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -49,6 +49,7 @@ const QuestionQuiz: React.FC<Props> = ({ targetTeam, usedQuestionIds, onCorrectA
     if (isCorrect) {
       setStep('reward');
     } else {
+      onQuestionAnswered(currentQ.id, false, null);
       goToNextOrFinish();
     }
   };
@@ -66,7 +67,7 @@ const QuestionQuiz: React.FC<Props> = ({ targetTeam, usedQuestionIds, onCorrectA
 
   const handleRewardSelect = (res: ResourceType) => {
     const currentQ = activeQuestions[currentIdx];
-    onCorrectAnswer(currentQ.id, res);
+    onQuestionAnswered(currentQ.id, true, res);
     goToNextOrFinish();
   };
 
@@ -119,7 +120,7 @@ const QuestionQuiz: React.FC<Props> = ({ targetTeam, usedQuestionIds, onCorrectA
         <h2 className="text-3xl font-extrabold text-slate-900">Correct!</h2>
         <p className="text-slate-600 px-4">Je verdient <span className="font-bold text-[#002b47]">Kennis</span>. Kies een tweede bonus:</p>
         
-        <div className="grid grid-cols-2 gap-3 md:gap-4 mt-4">
+        <div className="grid grid-cols-2 gap-3 mt-4">
           {(['Samenwerking', 'Tijd', 'Besluitkracht', 'Materiaal'] as ResourceType[]).map(res => (
             <button
               key={res}

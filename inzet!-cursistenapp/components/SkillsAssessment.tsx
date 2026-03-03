@@ -95,14 +95,14 @@ const SkillsAssessment: React.FC<Props> = ({ targetTeam, completedSkills, hasCom
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-3 md:gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 {[0, 1, 2].map(idx => (
                   <button
                     key={idx}
                     disabled={isDone || isLocked}
                     onClick={() => toggleStudent(skill.id, idx)}
                     className={`
-                      py-3 md:py-4 rounded-lg border-2 flex flex-col items-center justify-center transition-all
+                      py-3 rounded-lg border-2 flex flex-col items-center justify-center transition-all
                       ${isDone || progress[idx] 
                         ? 'bg-green-100 border-green-500 text-green-700' 
                         : isLocked 

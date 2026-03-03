@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      base: '/Cursist_Hulpverleners_van_BHVLand/',
+      base: '/INZET_Cursist/',
       server: {
         port: 3000,
         host: '0.0.0.0',
@@ -15,17 +15,18 @@ export default defineConfig(({ mode }) => {
         react(),
         VitePWA({
           registerType: 'autoUpdate',
-          includeAssets: ['icons/*.png'],
+          includeAssets: ['icons/*.png', 'icons/*.svg'],
           manifest: {
             name: "BHV'ers van BHV Land",
             short_name: 'BHV Land',
             description: "Training app voor BHV'ers - Hulpverleners van BHV Land",
-            start_url: '/Cursist_Hulpverleners_van_BHVLand/',
+            start_url: '/INZET_Cursist/',
             display: 'standalone',
             background_color: '#f8fafc',
             theme_color: '#002b47',
             lang: 'nl',
-            orientation: 'portrait',
+            orientation: 'any',
+            categories: ['education'],
             icons: [
               {
                 src: 'icons/icon-192x192.png',
@@ -60,7 +61,9 @@ export default defineConfig(({ mode }) => {
             ]
           },
           workbox: {
-            globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+            globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json}'],
+            navigateFallback: 'index.html',
+            navigateFallbackAllowlist: [/^\/INZET_Cursist/],
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

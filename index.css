@@ -42,3 +42,18 @@ button {
 .flex-gap-fallback > * + * {
   margin-top: 1.5rem;
 }
+
+/* Tablet-optimized touch targets and spacing */
+@media (min-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+/* Landscape tablet adjustments */
+@media (min-width: 768px) and (orientation: landscape) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+}
