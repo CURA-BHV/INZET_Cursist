@@ -17,9 +17,9 @@ export default defineConfig(({ mode }) => {
           registerType: 'autoUpdate',
           includeAssets: ['icons/*.png', 'icons/*.svg'],
           manifest: {
-            name: "BHV'ers van BHV Land",
-            short_name: 'BHV Land',
-            description: "Training app voor BHV'ers - Hulpverleners van BHV Land",
+            name: 'INZET',
+            short_name: 'INZET',
+            description: "Training app voor BHV'ers - INZET",
             start_url: '/INZET_Cursist/',
             display: 'standalone',
             background_color: '#f8fafc',

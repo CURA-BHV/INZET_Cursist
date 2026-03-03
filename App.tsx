@@ -157,7 +157,7 @@ const App: React.FC = () => {
         </div>
       )}
       <header className="bg-[#002b47] text-white p-4 shadow-md sticky top-0 z-50 flex items-center justify-between">
-        <h1 className="font-bold text-xl tracking-tight">BHV Land</h1>
+        <h1 className="font-bold text-xl tracking-tight">INZET</h1>
         <div className="flex items-center space-x-3">
           {ownTeam && (
             <div className="flex items-center space-x-2">
