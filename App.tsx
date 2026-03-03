@@ -1,69 +1,29 @@
-
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { TeamColor, AppScreen, ResourceType, TeamStats } from './types';
-import { SKILLS, ALL_QUESTIONS } from './constants';
+import { SKILLS } from './constants';
 import TeamSelection from './components/TeamSelection';
 import Dashboard from './components/Dashboard';
 import SkillsAssessment from './components/SkillsAssessment';
 import QuestionQuiz from './components/QuestionQuiz';
 import Summary from './components/Summary';
 
-const STORAGE_KEY = 'bhv-land-state';
-
-const emptyResources = (): Record<ResourceType, number> => ({
-  Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0,
-});
-
-const defaultTeamsStats = (): Record<TeamColor, TeamStats> => ({
-  geel: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
-  oranje: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
-  rood: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
-  groen: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
-});
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore corrupt data */ }
-  return null;
-}
-
-const saved = loadState();
-
 const App: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>(saved?.currentScreen ?? 'setup-own');
-  const [ownTeam, setOwnTeam] = useState<TeamColor | null>(saved?.ownTeam ?? null);
-  const [targetTeam, setTargetTeam] = useState<TeamColor | null>(saved?.targetTeam ?? null);
-  const [hasCompletedSkillThisRound, setHasCompletedSkillThisRound] = useState(saved?.hasCompletedSkillThisRound ?? false);
-  const [teamsStats, setTeamsStats] = useState<Record<TeamColor, TeamStats>>(saved?.teamsStats ?? defaultTeamsStats());
-  const [roundResources, setRoundResources] = useState<Record<ResourceType, number>>(saved?.roundResources ?? emptyResources());
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>('setup-own');
+  const [ownTeam, setOwnTeam] = useState<TeamColor | null>(null);
+  const [targetTeam, setTargetTeam] = useState<TeamColor | null>(null);
+  const [hasCompletedSkillThisRound, setHasCompletedSkillThisRound] = useState(false);
+  const [globalUsedQuestionIds, setGlobalUsedQuestionIds] = useState<string[]>([]);
 
-  // Persist state to localStorage on every change
-  useEffect(() => {
-    const state = { currentScreen, ownTeam, targetTeam, hasCompletedSkillThisRound, teamsStats, roundResources };
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* storage full */ }
-  }, [currentScreen, ownTeam, targetTeam, hasCompletedSkillThisRound, teamsStats, roundResources]);
+  const [teamsStats, setTeamsStats] = useState<Record<TeamColor, TeamStats>>({
+    geel: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+    oranje: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+    rood: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+    groen: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+  });
 
-  // Online/offline detection
-  useEffect(() => {
-    const goOffline = () => setIsOffline(true);
-    const goOnline = () => setIsOffline(false);
-    window.addEventListener('offline', goOffline);
-    window.addEventListener('online', goOnline);
-    return () => { window.removeEventListener('offline', goOffline); window.removeEventListener('online', goOnline); };
-  }, []);
-
-  const handleResetAll = () => {
-    setCurrentScreen('setup-own');
-    setOwnTeam(null);
-    setTargetTeam(null);
-    setHasCompletedSkillThisRound(false);
-    setTeamsStats(defaultTeamsStats());
-    setRoundResources(emptyResources());
-    localStorage.removeItem(STORAGE_KEY);
-  };
+  const [roundResources, setRoundResources] = useState<Record<ResourceType, number>>({
+    Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0
+  });
 
   const handleOwnTeamSelect = (color: TeamColor) => {
     setOwnTeam(color);
@@ -121,20 +81,6 @@ const App: React.FC = () => {
     }
   }, [targetTeam, updateResources]);
 
-  const markQuestionUsed = useCallback((questionId: string) => {
-    if (!targetTeam) return;
-    setTeamsStats(prev => {
-      const teamStats = prev[targetTeam];
-      return {
-        ...prev,
-        [targetTeam]: {
-          ...teamStats,
-          usedQuestionIds: [...teamStats.usedQuestionIds, questionId]
-        }
-      };
-    });
-  }, [targetTeam]);
-
   const handleFinishRound = () => {
     setCurrentScreen('summary');
   };
@@ -149,46 +95,79 @@ const App: React.FC = () => {
     setCurrentScreen('setup-target');
   };
 
+  const handleFullReset = () => {
+    // Geen confirm voor snellere werking
+    setOwnTeam(null);
+    setTargetTeam(null);
+    setHasCompletedSkillThisRound(false);
+    setGlobalUsedQuestionIds([]);
+    setRoundResources({ Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 });
+    setTeamsStats({
+      geel: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+      oranje: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+      rood: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+      groen: { completedSkills: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
+    });
+    setCurrentScreen('setup-own');
+  };
+
+  const getTeamBgColor = (team: TeamColor) => {
+    switch (team) {
+      case 'geel': return 'bg-[#e4e022]';
+      case 'oranje': return 'bg-[#f28b39]';
+      case 'rood': return 'bg-[#e73546]';
+      case 'groen': return 'bg-[#63b986]';
+      default: return 'bg-slate-200';
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto bg-white shadow-xl overflow-x-hidden">
-      {isOffline && (
-        <div className="bg-amber-500 text-white text-center text-sm font-semibold py-1 px-4">
-          Offline modus — Je voortgang wordt lokaal opgeslagen
-        </div>
-      )}
+    <div className="min-h-screen flex flex-col max-w-lg mx-auto bg-white shadow-xl overflow-x-hidden">
       <header className="bg-[#002b47] text-white p-4 shadow-md sticky top-0 z-50 flex items-center justify-between">
-        <h1 className="font-bold text-xl tracking-tight">INZET</h1>
-        <div className="flex items-center space-x-3">
-          {ownTeam && (
-            <div className="flex items-center space-x-2">
-              <span className="text-xs uppercase font-semibold opacity-80">Jouw Team</span>
-              <div className={`w-4 h-4 rounded-full border border-white ${getTeamBgColor(ownTeam)}`}></div>
-            </div>
+        <div className="flex items-center space-x-2">
+          {currentScreen !== 'setup-own' && (
+            <button 
+              onClick={handleFullReset}
+              className="flex items-center space-x-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-[11px] font-black uppercase tracking-wider border border-white/30 active:scale-95"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Reset</span>
+            </button>
           )}
-          <button
-            onClick={handleResetAll}
-            className="text-[10px] uppercase font-bold opacity-60 hover:opacity-100 bg-white/10 px-2 py-1 rounded"
-            title="Reset alle voortgang"
-          >
-            Reset
-          </button>
+          <h1 className="font-black text-xl tracking-tight ml-1">INZET! Cursistenapp</h1>
         </div>
+        {ownTeam && (
+          <div className="flex items-center space-x-2 bg-black/20 px-2 py-1 rounded-full border border-white/10">
+            <span className="text-[9px] uppercase font-black opacity-80">Jij</span>
+            <div className={`w-4 h-4 rounded-full border border-white shadow-sm ${getTeamBgColor(ownTeam)}`}></div>
+          </div>
+        )}
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-20">
+      <main className="flex-1 overflow-y-auto p-4 pb-20">
         {currentScreen === 'setup-own' && (
           <TeamSelection 
-            title="Kies jouw eigen teamkleur" 
+            title="Welke teamkleur ben je zelf?" 
             onSelect={handleOwnTeamSelect} 
           />
         )}
 
         {currentScreen === 'setup-target' && (
-          <TeamSelection 
-            title={`Welk team ga je beoordelen?`} 
-            exclude={ownTeam || undefined} 
-            onSelect={handleTargetTeamSelect} 
-          />
+          <div className="flex flex-col space-y-4">
+            <TeamSelection 
+              title={`Welk team ga je beoordelen?`} 
+              exclude={ownTeam || undefined} 
+              onSelect={handleTargetTeamSelect} 
+            />
+            <button 
+              onClick={() => setCurrentScreen('setup-own')}
+              className="text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-[#002b47] transition-colors py-4 text-center active:scale-95"
+            >
+              ← Wijzig eigen teamkleur
+            </button>
+          </div>
         )}
 
         {currentScreen === 'dashboard' && targetTeam && (
@@ -198,6 +177,7 @@ const App: React.FC = () => {
             onNavigate={setCurrentScreen}
             onFinish={handleFinishRound}
             onSwitchTeam={handleSwitchTeam}
+            onFullReset={handleFullReset}
           />
         )}
 
@@ -217,12 +197,14 @@ const App: React.FC = () => {
         {currentScreen === 'questions' && targetTeam && (
           <QuestionQuiz 
             targetTeam={targetTeam}
-            usedQuestionIds={teamsStats[targetTeam].usedQuestionIds}
-            onCorrectAnswer={(qId, bonusResource) => {
-              markQuestionUsed(qId);
-              const resourcesToAdd: ResourceType[] = ['Kennis'];
-              if (bonusResource) resourcesToAdd.push(bonusResource);
-              updateResources(resourcesToAdd);
+            usedQuestionIds={globalUsedQuestionIds}
+            onQuestionAnswered={(qId, isCorrect, bonusResource) => {
+              setGlobalUsedQuestionIds(prev => [...prev, qId]);
+              if (isCorrect) {
+                const resourcesToAdd: ResourceType[] = ['Kennis'];
+                if (bonusResource) resourcesToAdd.push(bonusResource);
+                updateResources(resourcesToAdd);
+              }
             }}
             onBack={() => setCurrentScreen('dashboard')}
           />
@@ -234,20 +216,12 @@ const App: React.FC = () => {
             roundResources={roundResources}
             onNextRound={handleNextRound}
             onSwitchTeam={handleSwitchTeam}
+            onFullReset={handleFullReset}
           />
         )}
       </main>
     </div>
   );
-};
-
-const getTeamBgColor = (team: TeamColor) => {
-  switch (team) {
-    case 'geel': return 'bg-[#e4e022]';
-    case 'oranje': return 'bg-[#f28b39]';
-    case 'rood': return 'bg-[#e73546]';
-    case 'groen': return 'bg-[#63b986]';
-  }
 };
 
 export default App;

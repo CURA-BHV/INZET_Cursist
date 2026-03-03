@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# INZET! Cursistenapp
 
-# Run and deploy your AI Studio app
+Training app voor BHV-cursisten. Een offline-first PWA die draait op tablets (Lenovo Yoga).
 
-This contains everything you need to run your app locally.
+## Installatie
 
-View your app in AI Studio: https://ai.studio/apps/drive/1VeRDtI058AXoOf9gMfgZO_Q8O_RqNjfk
+```bash
+npm install
+```
 
-## Run Locally
+## Development
 
-**Prerequisites:**  Node.js
+```bash
+npm run dev
+```
 
+## Productie build
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm run build
+npm run preview
+```
+
+De build wordt geplaatst in `dist/`. De app is een PWA met service worker en werkt volledig offline na eerste bezoek.
+
+## Deployment
+
+De app wordt automatisch gedeployed naar GitHub Pages via `.github/workflows/`.

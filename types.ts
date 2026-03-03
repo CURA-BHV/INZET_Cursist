@@ -33,7 +33,6 @@ export interface Question {
 
 export interface TeamStats {
   completedSkills: string[];
-  usedQuestionIds: string[];
   resources: Record<ResourceType, number>;
 }
 
