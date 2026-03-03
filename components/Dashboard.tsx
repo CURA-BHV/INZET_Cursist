@@ -33,7 +33,7 @@ const Dashboard: React.FC<Props> = ({ targetTeam, hasCompletedSkillThisRound, on
         <button
           onClick={() => !hasCompletedSkillThisRound && onNavigate('skills')}
           disabled={hasCompletedSkillThisRound}
-          className={`bg-white border-2 p-6 rounded-2xl flex items-center space-x-6 transition-colors group shadow-sm ${
+          className={`bg-white border-2 p-6 md:p-8 rounded-2xl flex items-center space-x-6 transition-colors group shadow-sm ${
             hasCompletedSkillThisRound 
               ? 'opacity-60 grayscale border-green-200 cursor-not-allowed' 
               : 'border-slate-200 hover:border-[#002b47]'
@@ -62,7 +62,7 @@ const Dashboard: React.FC<Props> = ({ targetTeam, hasCompletedSkillThisRound, on
 
         <button
           onClick={() => onNavigate('questions')}
-          className="bg-white border-2 border-slate-200 p-6 rounded-2xl flex items-center space-x-6 hover:border-blue-500 transition-colors group shadow-sm"
+          className="bg-white border-2 border-slate-200 p-6 md:p-8 rounded-2xl flex items-center space-x-6 hover:border-blue-500 transition-colors group shadow-sm"
         >
           <div className="bg-blue-100 p-4 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors text-blue-600 flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { TeamColor, AppScreen, ResourceType, TeamStats } from './types';
 import { SKILLS, ALL_QUESTIONS } from './constants';
 import TeamSelection from './components/TeamSelection';
@@ -8,22 +8,62 @@ import SkillsAssessment from './components/SkillsAssessment';
 import QuestionQuiz from './components/QuestionQuiz';
 import Summary from './components/Summary';
 
+const STORAGE_KEY = 'bhv-land-state';
+
+const emptyResources = (): Record<ResourceType, number> => ({
+  Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0,
+});
+
+const defaultTeamsStats = (): Record<TeamColor, TeamStats> => ({
+  geel: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
+  oranje: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
+  rood: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
+  groen: { completedSkills: [], usedQuestionIds: [], resources: emptyResources() },
+});
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore corrupt data */ }
+  return null;
+}
+
+const saved = loadState();
+
 const App: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<AppScreen>('setup-own');
-  const [ownTeam, setOwnTeam] = useState<TeamColor | null>(null);
-  const [targetTeam, setTargetTeam] = useState<TeamColor | null>(null);
-  const [hasCompletedSkillThisRound, setHasCompletedSkillThisRound] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>(saved?.currentScreen ?? 'setup-own');
+  const [ownTeam, setOwnTeam] = useState<TeamColor | null>(saved?.ownTeam ?? null);
+  const [targetTeam, setTargetTeam] = useState<TeamColor | null>(saved?.targetTeam ?? null);
+  const [hasCompletedSkillThisRound, setHasCompletedSkillThisRound] = useState(saved?.hasCompletedSkillThisRound ?? false);
+  const [teamsStats, setTeamsStats] = useState<Record<TeamColor, TeamStats>>(saved?.teamsStats ?? defaultTeamsStats());
+  const [roundResources, setRoundResources] = useState<Record<ResourceType, number>>(saved?.roundResources ?? emptyResources());
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-  const [teamsStats, setTeamsStats] = useState<Record<TeamColor, TeamStats>>({
-    geel: { completedSkills: [], usedQuestionIds: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
-    oranje: { completedSkills: [], usedQuestionIds: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
-    rood: { completedSkills: [], usedQuestionIds: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
-    groen: { completedSkills: [], usedQuestionIds: [], resources: { Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0 } },
-  });
+  // Persist state to localStorage on every change
+  useEffect(() => {
+    const state = { currentScreen, ownTeam, targetTeam, hasCompletedSkillThisRound, teamsStats, roundResources };
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* storage full */ }
+  }, [currentScreen, ownTeam, targetTeam, hasCompletedSkillThisRound, teamsStats, roundResources]);
 
-  const [roundResources, setRoundResources] = useState<Record<ResourceType, number>>({
-    Samenwerking: 0, Tijd: 0, Kennis: 0, Besluitkracht: 0, Materiaal: 0
-  });
+  // Online/offline detection
+  useEffect(() => {
+    const goOffline = () => setIsOffline(true);
+    const goOnline = () => setIsOffline(false);
+    window.addEventListener('offline', goOffline);
+    window.addEventListener('online', goOnline);
+    return () => { window.removeEventListener('offline', goOffline); window.removeEventListener('online', goOnline); };
+  }, []);
+
+  const handleResetAll = () => {
+    setCurrentScreen('setup-own');
+    setOwnTeam(null);
+    setTargetTeam(null);
+    setHasCompletedSkillThisRound(false);
+    setTeamsStats(defaultTeamsStats());
+    setRoundResources(emptyResources());
+    localStorage.removeItem(STORAGE_KEY);
+  };
 
   const handleOwnTeamSelect = (color: TeamColor) => {
     setOwnTeam(color);
@@ -110,18 +150,32 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col max-w-lg mx-auto bg-white shadow-xl overflow-x-hidden">
+    <div className="min-h-screen flex flex-col max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto bg-white shadow-xl overflow-x-hidden">
+      {isOffline && (
+        <div className="bg-amber-500 text-white text-center text-sm font-semibold py-1 px-4">
+          Offline modus — Je voortgang wordt lokaal opgeslagen
+        </div>
+      )}
       <header className="bg-[#002b47] text-white p-4 shadow-md sticky top-0 z-50 flex items-center justify-between">
         <h1 className="font-bold text-xl tracking-tight">BHV Land</h1>
-        {ownTeam && (
-          <div className="flex items-center space-x-2">
-            <span className="text-xs uppercase font-semibold opacity-80">Jouw Team</span>
-            <div className={`w-4 h-4 rounded-full border border-white ${getTeamBgColor(ownTeam)}`}></div>
-          </div>
-        )}
+        <div className="flex items-center space-x-3">
+          {ownTeam && (
+            <div className="flex items-center space-x-2">
+              <span className="text-xs uppercase font-semibold opacity-80">Jouw Team</span>
+              <div className={`w-4 h-4 rounded-full border border-white ${getTeamBgColor(ownTeam)}`}></div>
+            </div>
+          )}
+          <button
+            onClick={handleResetAll}
+            className="text-[10px] uppercase font-bold opacity-60 hover:opacity-100 bg-white/10 px-2 py-1 rounded"
+            title="Reset alle voortgang"
+          >
+            Reset
+          </button>
+        </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 pb-20">
+      <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-20">
         {currentScreen === 'setup-own' && (
           <TeamSelection 
             title="Kies jouw eigen teamkleur" 

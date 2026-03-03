@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
         react(),
         VitePWA({
           registerType: 'autoUpdate',
-          includeAssets: ['icons/*.png'],
+          includeAssets: ['icons/*.png', 'icons/*.svg'],
           manifest: {
             name: "BHV'ers van BHV Land",
             short_name: 'BHV Land',
@@ -25,7 +25,8 @@ export default defineConfig(({ mode }) => {
             background_color: '#f8fafc',
             theme_color: '#002b47',
             lang: 'nl',
-            orientation: 'portrait',
+            orientation: 'any',
+            categories: ['education'],
             icons: [
               {
                 src: 'icons/icon-192x192.png',
@@ -60,7 +61,9 @@ export default defineConfig(({ mode }) => {
             ]
           },
           workbox: {
-            globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+            globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json}'],
+            navigateFallback: 'index.html',
+            navigateFallbackAllowlist: [/^\/Cursist_Hulpverleners_van_BHVLand/],
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

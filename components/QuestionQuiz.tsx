@@ -119,7 +119,7 @@ const QuestionQuiz: React.FC<Props> = ({ targetTeam, usedQuestionIds, onCorrectA
         <h2 className="text-3xl font-extrabold text-slate-900">Correct!</h2>
         <p className="text-slate-600 px-4">Je verdient <span className="font-bold text-[#002b47]">Kennis</span>. Kies een tweede bonus:</p>
         
-        <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 mt-4">
           {(['Samenwerking', 'Tijd', 'Besluitkracht', 'Materiaal'] as ResourceType[]).map(res => (
             <button
               key={res}

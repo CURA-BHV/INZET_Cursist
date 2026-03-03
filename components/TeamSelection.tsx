@@ -19,7 +19,7 @@ const TeamSelection: React.FC<Props> = ({ title, onSelect, exclude }) => {
   return (
     <div className="flex flex-col items-center justify-center py-8">
       <h2 className="text-2xl font-bold mb-8 text-slate-800 text-center">{title}</h2>
-      <div className="grid grid-cols-2 gap-4 w-full">
+      <div className="grid grid-cols-2 gap-4 md:gap-6 w-full">
         {teams.map((team) => {
           const isDisabled = team.color === exclude;
           return (
@@ -28,12 +28,12 @@ const TeamSelection: React.FC<Props> = ({ title, onSelect, exclude }) => {
               disabled={isDisabled}
               onClick={() => onSelect(team.color)}
               className={`
-                h-40 rounded-2xl flex flex-col items-center justify-center p-4 transition-all
+                h-40 md:h-48 rounded-2xl flex flex-col items-center justify-center p-4 md:p-6 transition-all
                 ${team.bg} ${team.text} shadow-lg
                 ${isDisabled ? 'opacity-20 cursor-not-allowed grayscale' : 'hover:scale-105 active:scale-95 cursor-pointer'}
               `}
             >
-              <span className="text-xl font-bold">{team.label}</span>
+              <span className="text-xl md:text-2xl font-bold">{team.label}</span>
               {isDisabled && <span className="text-[10px] mt-2 uppercase font-semibold">Bezet</span>}
             </button>
           );
