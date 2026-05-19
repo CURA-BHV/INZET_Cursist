@@ -7,6 +7,14 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
       base: '/INZET_Cursist/',
+      build: {
+        rollupOptions: {
+          output: {
+            entryFileNames: 'assets/[name]-[hash]-v2.js',
+            chunkFileNames: 'assets/[name]-[hash]-v2.js',
+          }
+        }
+      },
       server: {
         port: 3000,
         host: '0.0.0.0',
@@ -64,6 +72,9 @@ export default defineConfig(({ mode }) => {
             globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json}'],
             navigateFallback: 'index.html',
             navigateFallbackAllowlist: [/^\/INZET_Cursist/],
+            additionalManifestEntries: [
+              { url: '/INZET_Cursist/', revision: '2026-05-19-v2' }
+            ],
             runtimeCaching: [
               {
                 urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
