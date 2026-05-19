@@ -260,6 +260,10 @@ const App: React.FC = () => {
           />
         )}
       </main>
+
+      <footer className="p-2 border-t border-slate-100 text-center">
+        <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase">V.1.3</span>
+      </footer>
     </div>
   );
 };
