@@ -2,14 +2,122 @@
 import { Skill, Question } from './types';
 
 export const SKILLS: Skill[] = [
-  { id: '1', name: 'Buik → rug draaien', rewards: ['Samenwerking', 'Tijd'] },
-  { id: '2', name: 'Stabiele zijligging', rewards: ['Samenwerking', 'Tijd'] },
-  { id: '3', name: 'AED-elektrodes plakken', rewards: ['Kennis', 'Besluitkracht'] },
-  { id: '4', name: 'Reanimatie', rewards: ['Tijd', 'Besluitkracht'] },
-  { id: '5', name: 'Pleisters plakken', rewards: ['Materiaal', 'Tijd'] },
-  { id: '6', name: 'Steunverband aanleggen', rewards: ['Materiaal', 'Samenwerking'] },
-  { id: '7', name: 'Dekenrol aanleggen', rewards: ['Materiaal', 'Samenwerking'] },
-  { id: '8', name: 'Wond steriel afdekken', rewards: ['Materiaal', 'Tijd'] },
+  { 
+    id: '1', 
+    name: 'Draaien van buik naar rug en zijligging', 
+    rewards: ['Samenwerking', 'Tijd', 'Besluitkracht'],
+    taskCard: [
+      '--- DRAAIEN VAN BUIK NAAR RUG ---',
+      'Dichtstbijzijnde arm langs het lichaam (handpalm boven).',
+      'Andere arm langs het hoofd omhoog (handrug boven).',
+      'Til de dichtstbijzijnde schouder op tot zijligging.',
+      'Draai door met hoofdondersteuning, duw schouder van je af.',
+      '--- ZIJLIGGING ---',
+      'Verwijder bril indien nodig, benen gestrekt.',
+      'Dichtstbijzijnde arm in rechte hoek leggen (handpalm boven).',
+      'Verste arm over borst, handrug tegen verste wang houden.',
+      'Verste knie optrekken tot voet plat op de grond staat.',
+      'Draai slachtoffer naar je toe door aan de knie te trekken.',
+      'Leg gebogen been in hoek van 90 graden.',
+      'Kantel hoofd naar achteren (luchtweg vrij maken).',
+      'Controleer continu de ademhaling (borst/buik beweging).'
+    ]
+  },
+  { 
+    id: '2', 
+    name: 'Reanimatie en AED', 
+    rewards: ['Kennis', 'Besluitkracht', 'Tijd'],
+    taskCard: [
+      'Controleer het bewustzijn (schudden en aanspreken).',
+      'Niet aanspreekbaar? Bel direct 112.',
+      'Controleer de ademhaling (10 seconden kijken, luisteren, voelen).',
+      'Geen ademhaling? Zet direct de AED aan en volg instructies.',
+      'Ontbloot de borstkas.',
+      'Haal elektroden uit verpakking en plaats ze volgens afbeelding.',
+      'AED analyseert: raak het slachtoffer NIET aan.',
+      'Schokopdracht? Houd afstand en volg instructie op.',
+      'Start 30 borstcompressies.',
+      'Geef 2 beademingen.',
+      'Ga door tot professionele hulpverleners het overnemen.'
+    ]
+  },
+  { 
+    id: '3', 
+    name: 'Pleisters plakken en wond steriel afdekken', 
+    rewards: ['Materiaal', 'Tijd', 'Kennis'],
+    taskCard: [
+      '--- VINGERBOB ---',
+      'Leg eerst een steriel gaas op de wond.',
+      'Zet het gaasje vast met de vingerbob.',
+      'Draai het verband boven de vinger een slag.',
+      'Rol de rest van de vingerbob uit over de vinger.',
+      '--- DEKVERBAND HAND ---',
+      'Leg een steriel gaas op de wond.',
+      'Leg een volle slag met de zwachtel op de hand (vingertoppen vrij).',
+      'Zwachtel met overlap richting de pols.',
+      'Maak een slag over de muis van de hand.',
+      'Eindig met een paar slagen rondom de pols.',
+      'Zet de zwachtel vast met kleefpleister.'
+    ]
+  },
+  { 
+    id: '4', 
+    name: 'Steunverband aanleggen en dekenrol aanleggen', 
+    rewards: ['Materiaal', 'Samenwerking', 'Tijd'],
+    taskCard: [
+      '--- STEUNVERBAND ENKEL/POLS ---',
+      'Verwijder schoen/sok of sieraden bij het letsel.',
+      'Koel het letsel 10 tot maximaal 20 minuten.',
+      'Plaats de eerste slag direct achter de tenen of bij de vingerbasis.',
+      'Zwachtel richting enkel of pols met overlap.',
+      'Geef extra steun bij de hiel of pols met extra slagen.',
+      'Zet de zwachtel vast met kleefpleister.',
+      '--- AANLEG DEKENROL ---',
+      'Meet de deken af aan de GEZONDE zijde (heup tot voorbij de voet).',
+      'Vouw de deken terug bij de voet voor een dikkere rol.',
+      'Rol de deken strak op.',
+      'Leg de rol aan de GEWONDE zijde voorzichtig tegen heup en been.',
+      'Duw het laatste stukje rol onder de voet voor maximale steun.'
+    ]
+  },
+  { 
+    id: '5', 
+    name: 'Voorwerp in de wond en open botbreuk', 
+    rewards: ['Materiaal', 'Kennis', 'Besluitkracht'],
+    taskCard: [
+      '--- VOORWERP IN DE WOND ---',
+      'Leg aan weerszijden van het voorwerp een rolletje verband.',
+      'Plak de rolletjes stevig vast met kleefpleister (stabiele brug).',
+      'Eventueel extra zwachtel OVER de rolletjes (niet over voorwerp).',
+      '--- OPEN BOTBREUK ---',
+      'Bel 112 en voorkom beweging van het lichaamsdeel.',
+      'Verwijder sieraden en knip knellende kleding weg.',
+      'Dek de wond af met een steriel gaas en zet losjes vast met kleefpleister.'
+    ]
+  },
+  { 
+    id: '7', 
+    name: 'Verslikking en rautek van de stoel', 
+    rewards: ['Samenwerking', 'Kennis', 'Besluitkracht'],
+    taskCard: [
+      '--- VERSLIKKING ---',
+      'Ga aan de zijkant staan en ondersteun de borstkas.',
+      'Laat het slachtoffer voorover buigen.',
+      'Geef 5 forse rugslagen tussen de schouderbladen.',
+      'Geen effect? Geef 5 buikstoten.',
+      'Ga achter slachtoffer staan, armen om bovenste deel buik.',
+      'Maak een vuist, dek af met andere hand, trek schuin omhoog.',
+      'Blijf rugslagen en buikstoten afwisselen. Bel 112 indien alleen.',
+      '--- RAUTEK VAN STOEL NAAR GROND ---',
+      'Stabiliseren: Duw slachtoffer tegen rugleuning om voorovervallen te voorkomen.',
+      'Loop rondom stoel terwijl je slachtoffer gesteund houdt.',
+      'Grip: Schuif armen onder oksels door, pak onderarm vast (vingers aaneengesloten).',
+      'Positie: Voet voor stoelpoot, verschuif slachtoffer schuin op de stoel.',
+      'Neerleggen: Breng slachtoffer rustig naar de grond (zwaartekracht gebruiken).',
+      'Hoofd opvangen: Vang het hoofd op en leg het voorzichtig neer.',
+      'Bureaustoel: Zet voet voor wieltje of laat collega stoel vasthouden.'
+    ]
+  },
 ];
 
 export const ALL_QUESTIONS: Question[] = [

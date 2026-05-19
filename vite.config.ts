@@ -1,9 +1,10 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, '.', '');
     return {
       base: '/INZET_Cursist/',
       server: {
@@ -71,7 +72,7 @@ export default defineConfig(() => {
                   cacheName: 'google-fonts-cache',
                   expiration: {
                     maxEntries: 10,
-                    maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                    maxAgeSeconds: 60 * 60 * 24 * 365
                   },
                   cacheableResponse: {
                     statuses: [0, 200]
@@ -85,7 +86,7 @@ export default defineConfig(() => {
                   cacheName: 'gstatic-fonts-cache',
                   expiration: {
                     maxEntries: 10,
-                    maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                    maxAgeSeconds: 60 * 60 * 24 * 365
                   },
                   cacheableResponse: {
                     statuses: [0, 200]
@@ -96,6 +97,10 @@ export default defineConfig(() => {
           }
         })
       ],
+      define: {
+        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
