@@ -42,11 +42,10 @@ const Dashboard: React.FC<Props> = ({ targetTeam, hasCompletedSkillThisRound, on
 
       <div className="flex flex-col space-y-4">
         <button
-          onClick={() => !hasCompletedSkillThisRound && onNavigate('skills')}
-          disabled={hasCompletedSkillThisRound}
+          onClick={() => onNavigate('skills')}
           className={`bg-white border-2 p-6 rounded-3xl flex items-center space-x-6 transition-all group shadow-sm ${
             hasCompletedSkillThisRound 
-              ? 'opacity-60 grayscale border-green-200 cursor-not-allowed' 
+              ? 'border-green-200 hover:border-green-400' 
               : 'border-slate-100 hover:border-[#002b47] hover:shadow-md'
           }`}
         >
@@ -65,7 +64,7 @@ const Dashboard: React.FC<Props> = ({ targetTeam, hasCompletedSkillThisRound, on
             </h3>
             <p className="text-slate-500 text-sm font-medium">
               {hasCompletedSkillThisRound 
-                ? 'Afgerond voor deze ronde.' 
+                ? 'Tik om te bekijken/resetten.' 
                 : 'Beoordeel de praktische skills.'}
             </p>
           </div>

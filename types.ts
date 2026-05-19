@@ -22,6 +22,7 @@ export interface Skill {
   id: string;
   name: string;
   rewards: ResourceType[];
+  taskCard?: string[];
 }
 
 export interface Question {

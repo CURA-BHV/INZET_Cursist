@@ -81,6 +81,45 @@ const App: React.FC = () => {
     }
   }, [targetTeam, updateResources]);
 
+  const resetSkill = useCallback((skillId: string) => {
+    if (!targetTeam) return;
+    
+    const skill = SKILLS.find(s => s.id === skillId);
+    if (!skill) return;
+
+    // Remove from current round summary if applicable
+    setRoundResources(prev => {
+      const next = { ...prev };
+      skill.rewards.forEach(r => {
+        if (next[r] > 0) next[r]--;
+      });
+      return next;
+    });
+
+    // Remove from total team stats
+    setTeamsStats(prev => {
+      const teamStats = prev[targetTeam];
+      if (!teamStats.completedSkills.includes(skillId)) return prev;
+      
+      const nextResources = { ...teamStats.resources };
+      skill.rewards.forEach(r => {
+        if (nextResources[r] > 0) nextResources[r]--;
+      });
+
+      return {
+        ...prev,
+        [targetTeam]: {
+          ...teamStats,
+          completedSkills: teamStats.completedSkills.filter(id => id !== skillId),
+          resources: nextResources
+        }
+      };
+    });
+    
+    // Allow doing another skill if we just reset the one from this round
+    setHasCompletedSkillThisRound(false);
+  }, [targetTeam]);
+
   const handleFinishRound = () => {
     setCurrentScreen('summary');
   };
@@ -190,6 +229,7 @@ const App: React.FC = () => {
               markSkillComplete(id);
               setCurrentScreen('dashboard');
             }}
+            onSkillReset={(id) => resetSkill(id)}
             onBack={() => setCurrentScreen('dashboard')}
           />
         )}
