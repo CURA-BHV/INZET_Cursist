@@ -73,7 +73,7 @@ export default defineConfig(({ mode }) => {
             navigateFallback: 'index.html',
             navigateFallbackAllowlist: [/^\/INZET_Cursist/],
             additionalManifestEntries: [
-              { url: '/INZET_Cursist/', revision: '2026-05-19-v1.3' }
+              { url: '/INZET_Cursist/', revision: '2026-05-19-v1.4' }
             ],
             runtimeCaching: [
               {

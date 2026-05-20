@@ -81,21 +81,6 @@ const Summary: React.FC<Props> = ({ targetTeam, roundResources, onNextRound, onS
         >
           VOLGENDE RONDE
         </button>
-        <button
-          onClick={onSwitchTeam}
-          className="w-full bg-white text-[#002b47] border-2 border-[#002b47] py-4 rounded-2xl font-bold text-lg active:bg-slate-50"
-        >
-          Ander team beoordelen
-        </button>
-        
-        <div className="pt-4 border-t border-slate-100 mt-4">
-          <button
-            onClick={onFullReset}
-            className="w-full text-red-500 border border-red-100 py-3 rounded-xl font-medium text-sm hover:bg-red-50 transition-colors"
-          >
-            Volledige Reset (Kies nieuwe eigen kleur)
-          </button>
-        </div>
       </div>
     </div>
   );
