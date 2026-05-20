@@ -175,7 +175,7 @@ const App: React.FC = () => {
               <span>Reset</span>
             </button>
           )}
-          <h1 className="font-black text-xl tracking-tight ml-1">INZET! Cursistenapp</h1>
+          <h1 className="font-black text-xl tracking-tight ml-1">Cursistenapp INZET!</h1>
         </div>
         {ownTeam && (
           <div className="flex items-center space-x-2 bg-black/20 px-2 py-1 rounded-full border border-white/10">
